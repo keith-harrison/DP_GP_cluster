@@ -16,6 +16,8 @@ File "/home/kh530/miniconda3/envs/py36/lib/python3.6/site-packages/DP_GP/plot.py
 .ix to .iloc
 File "/home/kh530/miniconda3/envs/py36/lib/python3.6/site-packages/pandas/core/generic.py", line 5141, in __getattr__   return object.__getattribute__(self, name) AttributeError: 'DataFrame' object has no attribute 'ix'
 
+### Adding in Polar Plots!
+plot(X,polar=True) added for those polar plots :)
 
 
 ## DP_GP_cluster
