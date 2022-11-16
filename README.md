@@ -3,7 +3,7 @@
 
 ## Fixes for Keith-Harrison changes I made to work with python3.6 just make a conda environment for 3.6
 
-### CHANGES TO GPy
+### CHANGES TO GPy (you have to make these changes yourself)
 Find replace in VV and do __new__ to __init__
 File "/home/kh530/miniconda3/envs/py36/lib/python3.6/site-packages/GPy/core/parameterization/priors.py", line 365, in __new__
 
