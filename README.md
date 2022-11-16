@@ -1,6 +1,23 @@
 
 [![Build Status](https://travis-ci.org/ReddyLab/DP_GP_cluster.svg?branch=master)](https://travis-ci.org/ReddyLab/DP_GP_cluster)
 
+## Fixes for Keith-Harrison changes I made to work with python3.6 just make a conda environment for 3.6
+
+### CHANGES TO GPy
+Find replace in VV and do __new__ to __init__
+File "/home/kh530/miniconda3/envs/py36/lib/python3.6/site-packages/GPy/core/parameterization/priors.py", line 365, in __new__
+
+### CHANGES to DP_GP
+Change iteritems to items
+File "/home/kh530/miniconda3/envs/py36/bin/DP_GP_cluster.py", line 617, in <module> for cluster, genes in optimal_cluster_labels.iteritems(): AttributeError: 'collections.defaultdict' object has no attribute 'iteritems'
+
+#xrange to range
+File "/home/kh530/miniconda3/envs/py36/lib/python3.6/site-packages/DP_GP/plot.py", line 73, in plot_cluster_gene_expression IDs_split = [IDs[i:i+subplots_per_fig] for i in xrange(0, len(IDs), subplots_per_fig)] NameError: name 'xrange' is not defined
+.ix to .iloc
+File "/home/kh530/miniconda3/envs/py36/lib/python3.6/site-packages/pandas/core/generic.py", line 5141, in __getattr__   return object.__getattribute__(self, name) AttributeError: 'DataFrame' object has no attribute 'ix'
+
+
+
 ## DP_GP_cluster
 
 DP_GP_cluster clusters genes by expression over a time course using a Dirichlet process Gaussian process model.
