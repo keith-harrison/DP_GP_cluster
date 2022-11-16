@@ -16,8 +16,14 @@ File "/home/kh530/miniconda3/envs/py36/lib/python3.6/site-packages/DP_GP/plot.py
 .ix to .iloc
 File "/home/kh530/miniconda3/envs/py36/lib/python3.6/site-packages/pandas/core/generic.py", line 5141, in __getattr__   return object.__getattribute__(self, name) AttributeError: 'DataFrame' object has no attribute 'ix'
 
+fixed --true times parameter usage 
+
 ### Adding in Polar Plots!
 plot(X,polar=True) added for those polar plots :)
+
+## TO USE DO COMMAND 
+DP_GP_cluster.py -i test/test.txt -o test/test -p png --plot --true_times True -t 'Time (hpi)'
+
 
 
 ## DP_GP_cluster

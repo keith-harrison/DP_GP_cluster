@@ -61,7 +61,7 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
     :rtype: None (output is saved to file(s))
     
     ''' 
-    # cluster IDs:
+     # cluster IDs:
     IDs = sorted(clusters)
     # one panel per cluster:
     total_subplots = len(IDs)
@@ -91,7 +91,7 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
             plt.axhline(0, color='black', ls='--', alpha=0.5)
             # plot the expression of each gene in the cluster
             for gene in list(clusters[ID].members):
-                ax.plot(t, np.array(gene_expression_matrix.iloc[gene]), color='red', alpha=0.1)
+                  ax.plot(t, np.array(gene_expression_matrix.iloc[gene]), color='red', alpha=0.1)
             
             # plot mean expression of cluster
             ax.plot(Xgrid, mu, color='blue')
@@ -118,6 +118,79 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
         
         for plot_type in plot_types:
             plt.savefig(output_path_prefix + '_gene_expression_fig_' + str(c+1) + '.' + plot_type)
+    ###PLOT POLAR!
+    # cluster IDs:
+    IDs = sorted(clusters)
+    # one panel per cluster:
+    total_subplots = len(IDs)
+    # max of 6 panels per figure or page
+    subplots_per_fig = 6
+    total_no_of_figs = int(np.ceil(total_subplots/float(subplots_per_fig)))
+    total_cols = 2 # generate this many columns of subplots in the figure.
+    total_rows = np.ceil(subplots_per_fig/total_cols) # each figure generate will have this many rows.
+    IDs_split = [IDs[i:i+subplots_per_fig] for i in range(0, len(IDs), subplots_per_fig)]
+    index = 1
+    for c, IDs in enumerate(IDs_split):
+        fig = plt.figure(num=None, figsize=(8,12), dpi=300, facecolor='w', edgecolor='k') #figsize=(12,8),
+        for i, ID in enumerate(IDs):
+            ax = fig.add_subplot(total_rows, total_cols, i+1,projection='polar')
+            ax.set_theta_direction(-1)
+            ax.set_theta_offset(np.pi/2)
+            t_labels = np.array(t_labels,dtype=float)
+            ax.set_xticks(t_labels.astype(int)[:len(t_labels)-1]*2*np.pi/max(t_labels))
+
+            ax.set_xticklabels(t_labels.astype(int)[:len(t_labels)-1])
+            plt.setp(ax.get_yticklabels(),visible=True)
+            # create a range of values at which to evaluate the covariance function
+            Xgrid = np.vstack(np.linspace(min(t), max(t), num=500))
+            # calculate mean and variance at grid of x values
+            mu, v = clusters[ID].model.predict(Xgrid, full_cov=False, kern=clusters[ID].model.kern)
+
+
+            mu = np.hstack(mu.mean(axis=1))
+            #Change t to be the index
+            t = np.array(t_labels,dtype=float)
+            Xgrid = np.vstack(np.linspace(min(t), max(t), num=500))
+            Xgrid = (2*np.pi*Xgrid/max(t))
+            v = v[:,0]
+            GPy.plotting.matplot_dep.base_plots.gpplot(Xgrid, mu, mu - 2*v**(0.5),  mu + 2*v**(0.5), ax=ax)
+            t = (2*np.pi*t/max(t))
+            ax.set_xlim(0,2*np.pi)
+            #if ( not unscaled ) and ( not do_not_mean_center ) :
+            ax.set_ylim((-3.1,3))
+
+
+ 
+            
+            # plot the expression of each gene in the cluster
+            for gene in list(clusters[ID].members):
+ 
+                  ax.plot(t, np.array(gene_expression_matrix.iloc[gene]), color='red', alpha=0.1)
+            
+            # plot mean expression of cluster
+
+            ax.plot(Xgrid, mu, color='blue')
+            # create legend
+            light_blue_patch = mpatches.Rectangle([0, 0], 1, 1, facecolor='#33CCFF', edgecolor='blue', lw=1, alpha=0.3)
+            red_line = mlines.Line2D([], [], color='red', label='individual gene trajectory')
+            ax.legend([ax.lines[0], light_blue_patch, red_line], \
+                      ['cluster mean', u'cluster mean \u00B1 2 x std. dev.', 'individual gene trajectory'], 
+                      loc='lower center', frameon=False, prop={'size':6})
+            # label x-axis
+            if time_unit == '':
+                ax.set_xlabel("Time")
+            else:
+                ax.set_xlabel(str(time_unit))
+            ax.set_ylabel('Gene expression',x=-1.9,y=0.9,rotation=45)
+
+
+            ax.set_title('Cluster %s'%(index))
+            index+=1
+        
+        plt.tight_layout()
+        
+        for plot_type in plot_types:
+            plt.savefig(output_path_prefix + '_gene_expression_polar_fig_' + str(c+1) + '.' + plot_type)
 
 #############################################################################################
 

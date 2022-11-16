@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/home/kh530/miniconda3/envs/py36/bin/python
 # -*- coding: utf-8 -*-
 ##############################################################################
 #
@@ -221,8 +221,9 @@ using the "_posterior_similarity_matrix.txt" or "_clusterings.txt" file.
 #
 ##############################################################################
 
-parser.add_argument("--true_times", action='store_true', dest="true_times", \
+parser.add_argument("--true_times", dest="true_times",type=bool, \
                   help="""optional, [default=False]   
+                
 Set this flag if the header contains true time values (e.g. 0, 0.5, 4, 8,...)
 and it is desired that the covariance kernel recognizes the true
 time spacing between sampling points, which need not be constant.
@@ -615,7 +616,7 @@ if args.save_residuals:
 optimal_clusters_GP = {}
 print("Optimizing parameters for optimal clusters.")
 for cluster, genes in optimal_cluster_labels.items():
-    print("Cluster %s, %s genes"%(cluster, len(genes)))
+    print( "Cluster %s, %s genes"%(cluster, len(genes)))
     optimal_clusters_GP[cluster] = core.dp_cluster(members=genes, 
                                                    sigma_n=sigma_n, 
                                                    X=np.vstack(t), 
