@@ -137,9 +137,17 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
             ax.set_theta_direction(-1)
             ax.set_theta_offset(np.pi/2)
             t_labels = np.array(t_labels,dtype=float)
-            ax.set_xticks(t_labels.astype(int)[:len(t_labels)-1]*2*np.pi/max(t_labels))
+            ax.set_xticks(t_labels.astype(int)[:len(t_labels)]*2*np.pi/max(t_labels))
 
-            ax.set_xticklabels(t_labels.astype(int)[:len(t_labels)-1])
+            ax.set_xticklabels(t_labels.astype(int)[:len(t_labels)])
+
+            #Plot all radial x ticks but remove the last one and add it onto the first e.g. 24/0 hpi
+
+            current_labels = [item.get_text() for item in ax.get_xticklabels()]
+            current_labels[0] = str(int(min(t_labels)))+"/"+str(int(max(t_labels)))
+            current_labels[-1] =""
+            ax.set_xticklabels(current_labels)
+
             plt.setp(ax.get_yticklabels(),visible=True)
             # create a range of values at which to evaluate the covariance function
             Xgrid = np.vstack(np.linspace(min(t), max(t), num=500))
@@ -149,12 +157,11 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
 
             mu = np.hstack(mu.mean(axis=1))
             #Change t to be the index
-            t = np.array(t_labels,dtype=float)
-            Xgrid = np.vstack(np.linspace(min(t), max(t), num=500))
-            Xgrid = (2*np.pi*Xgrid/max(t))
+            newt = np.array(t_labels,dtype=float)
+            Xgrid = (2*np.pi*Xgrid/max(newt))
             v = v[:,0]
             GPy.plotting.matplot_dep.base_plots.gpplot(Xgrid, mu, mu - 2*v**(0.5),  mu + 2*v**(0.5), ax=ax)
-            t = (2*np.pi*t/max(t))
+            newt = (2*np.pi*newt/max(newt))
             ax.set_xlim(0,2*np.pi)
             #if ( not unscaled ) and ( not do_not_mean_center ) :
             ax.set_ylim((-3.1,3))
@@ -165,7 +172,7 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
             # plot the expression of each gene in the cluster
             for gene in list(clusters[ID].members):
  
-                  ax.plot(t, np.array(gene_expression_matrix.iloc[gene]), color='red', alpha=0.1)
+                  ax.plot(newt, np.array(gene_expression_matrix.iloc[gene]), color='red', alpha=0.1)
             
             # plot mean expression of cluster
 
