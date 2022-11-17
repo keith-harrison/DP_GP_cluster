@@ -118,6 +118,8 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
         
         for plot_type in plot_types:
             plt.savefig(output_path_prefix + '_gene_expression_fig_' + str(c+1) + '.' + plot_type)
+
+
     ###PLOT POLAR!
     # cluster IDs:
     IDs = sorted(clusters)
@@ -158,21 +160,23 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
             mu = np.hstack(mu.mean(axis=1))
             #Change t to be the index
             newt = np.array(t_labels,dtype=float)
+            #Set this to be between the right values for the plot
+            Xgrid = np.vstack(np.linspace(min(t_labels), max(t_labels), num=500))
             Xgrid = (2*np.pi*Xgrid/max(newt))
             v = v[:,0]
             GPy.plotting.matplot_dep.base_plots.gpplot(Xgrid, mu, mu - 2*v**(0.5),  mu + 2*v**(0.5), ax=ax)
-            newt = (2*np.pi*newt/max(newt))
+
             ax.set_xlim(0,2*np.pi)
             #if ( not unscaled ) and ( not do_not_mean_center ) :
             ax.set_ylim((-3.1,3))
 
 
- 
-            
+
+            newtradians = (2*np.pi*newt/max(newt))
             # plot the expression of each gene in the cluster
             for gene in list(clusters[ID].members):
  
-                  ax.plot(newt, np.array(gene_expression_matrix.iloc[gene]), color='red', alpha=0.1)
+                  ax.plot(newtradians, np.array(gene_expression_matrix.iloc[gene]), color='red', alpha=0.1)
             
             # plot mean expression of cluster
 
@@ -182,13 +186,13 @@ def plot_cluster_gene_expression(clusters, gene_expression_matrix, t, t_labels, 
             red_line = mlines.Line2D([], [], color='red', label='individual gene trajectory')
             ax.legend([ax.lines[0], light_blue_patch, red_line], \
                       ['cluster mean', u'cluster mean \u00B1 2 x std. dev.', 'individual gene trajectory'], 
-                      loc='lower center', frameon=False, prop={'size':6})
+                        bbox_to_anchor=(0.2,0.1), frameon=False, prop={'size':6})
             # label x-axis
             if time_unit == '':
                 ax.set_xlabel("Time")
             else:
                 ax.set_xlabel(str(time_unit))
-            ax.set_ylabel('Gene expression',x=-1.9,y=0.9,rotation=45)
+            ax.set_ylabel('Gene expression',x=-1.7,y=0.8,rotation=45)
 
 
             ax.set_title('Cluster %s'%(index))
